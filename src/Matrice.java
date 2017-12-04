@@ -155,4 +155,18 @@ public class Matrice {
     public int[][] getMatrice() {
         return matrice;
     }
+
+    public String writeToJson() {
+        String adj = "";
+        String ret = "";
+
+        for(Map.Entry<Rotation, Matrice> entry : adjacent.entrySet()){
+            adj += "{\""+entry.getKey().getValue()+"\":\""+entry.getValue().hashCode()+"\"},";
+        }
+
+        adj= adj.substring(0, adj.length() - 1);
+        ret +="{\"id\": \""+this.hashCode()+"\", \"adjacent\": ["+adj+"]},";
+
+        return ret;
+    }
 }

@@ -1,8 +1,10 @@
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import jdk.nashorn.internal.parser.JSONParser;
+
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 public class Main {
 
@@ -13,9 +15,21 @@ public class Main {
         Matrice.parcours();
 
         try {
-            FileOutputStream fos = new FileOutputStream("test.dat");
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(Matrice.allMatrices);
+            PrintWriter writer = new PrintWriter("matrix.json", "UTF-8");
+            writer.println("[");
+            for(Matrice mat : Matrice.allMatrices){
+                writer.println(mat.writeToJson());
+            }
+            writer.println("]");
+            writer.close();
+
+            try (Stream<String> stream = Files.lines(Paths.get("matrix.json"))) {
+                stream.forEach((line) -> {
+
+                });
+
+            }
+
         } catch (Exception e) {
 
         }
