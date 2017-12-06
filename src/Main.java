@@ -21,13 +21,17 @@ public class Main {
 
     public Main() {
         int[][] rootC = {{1,2,3},{4,5,6},{7,8,9}};
+        int[][] input = {{2,8,7}, {1,9,6}, {3,4,5}};
+
         matrices.put(matrixToString(rootC), new ArrayList<>());
         queue.add(rootC);
         process();
         System.out.println("All nodes :" + matrices.size());
         System.out.println("1 CC : " + parcoursEnLargeurCC(matrixToString(rootC)).size());
 
+        int res = parcoursEnLargeur(matrixToString(input), matrixToString(rootC));
 
+        System.out.println(res);
     }
 
     public void process(){
@@ -56,7 +60,6 @@ public class Main {
             if(matrices.get(ref) == null){
                 matrices.put(ref, new ArrayList<>());
                 queue.add(newMatrix);
-                System.out.println("new Matrix! " + nb);
                 nb++;
             }
             matrices.get(ref).add(parent);
@@ -86,25 +89,31 @@ public class Main {
     }
 
 
+
+
     public int parcoursEnLargeur(String root, String goal){
         Deque<String> q = new ArrayDeque<>();
         HashMap<String, Boolean> marques = new HashMap<>();
         HashMap<String, Integer> level = new HashMap<>();
-        ArrayList<String> composante = new ArrayList<>();
 
         q.add(root);
         marques.put(root, true);
         level.put(root, 0);
-        composante.add(root);
+
+
         while(!q.isEmpty()){
             String parent = q.pop();
             for(String cm : matrices.get(parent)){
+                if(cm.equals(goal)){
+                    return level.get(parent);
+                }
+
                 if(marques.get(cm) != null)
                     continue;
+
                 marques.put(cm, true);
                 q.push(cm);
                 level.put(cm, level.get(parent)+1);
-                composante.add(cm);
             }
         }
 
