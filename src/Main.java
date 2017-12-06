@@ -10,13 +10,13 @@ public class Main {
     final int size = 3;
 
     public HashMap<String, ArrayList<String>> matrices = new HashMap<>();
+    //public HashMap<String, ArrayList<String>> matrices = new HashMap<>();
     public Deque<int[][]> queue = new ArrayDeque();
 
     public int nb = 0;
 
     public static void main(String[] args){
         Main m = new Main();
-
     }
 
     public Main() {
@@ -24,6 +24,10 @@ public class Main {
         matrices.put(matrixToString(rootC), new ArrayList<>());
         queue.add(rootC);
         process();
+        System.out.println("All nodes :" + matrices.size());
+        System.out.println("1 CC : " + parcoursEnLargeurCC(matrixToString(rootC)).size());
+
+
     }
 
     public void process(){
@@ -60,13 +64,52 @@ public class Main {
         }
     }
 
+    public ArrayList<String> parcoursEnLargeurCC(String root){
+        Deque<String> q = new ArrayDeque<>();
+        ArrayList<String> composante = new ArrayList<>();
+        HashMap<String, Boolean> marques = new HashMap<>();
+
+        q.add(root);
+        composante.add(root);
+        marques.put(root, true);
+        while(!q.isEmpty()){
+            for(String cm : matrices.get(q.pop())){
+                if(marques.get(cm) != null)
+                    continue;
+                marques.put(cm, true);
+                q.push(cm);
+                composante.add(cm);
+            }
+        }
+
+        return composante;
+    }
 
 
+    public int parcoursEnLargeur(String root, String goal){
+        Deque<String> q = new ArrayDeque<>();
+        HashMap<String, Boolean> marques = new HashMap<>();
+        HashMap<String, Integer> level = new HashMap<>();
+        ArrayList<String> composante = new ArrayList<>();
 
+        q.add(root);
+        marques.put(root, true);
+        level.put(root, 0);
+        composante.add(root);
+        while(!q.isEmpty()){
+            String parent = q.pop();
+            for(String cm : matrices.get(parent)){
+                if(marques.get(cm) != null)
+                    continue;
+                marques.put(cm, true);
+                q.push(cm);
+                level.put(cm, level.get(parent)+1);
+                composante.add(cm);
+            }
+        }
 
-
-
-
+        return 1;
+    }
 
     public String matrixToString(int[][] matrix){
         String s = "";
@@ -76,6 +119,14 @@ public class Main {
             }
         }
         return s;
+    }
+
+    public int[][] stringToMatrix(String matrix){
+        int[][] m = new int[size][size];
+        for(int i = 0; i < matrix.length(); i++){
+            m[i/3][i%3] = Character.getNumericValue(matrix.toCharArray()[i]);
+        }
+        return m;
     }
 
     private int[][] calcul(Rotation rot, int[][] input){
